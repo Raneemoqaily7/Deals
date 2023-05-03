@@ -8,6 +8,13 @@ packages = [{include = "deals_project"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+django = "^4.2.1"
+djangorestframework = "^3.14.0"
+markdown = "^3.4.3"
+django-filter = "^23.2"
+django-datetime-utc = "^1.0.4"
+django-phonenumber-field = "^7.1.0"
+phonenumbers = "^8.13.11"
 
 
 [build-system]

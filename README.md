@@ -11,3 +11,12 @@ records at a time)
 · Delete one or more user on the same time (Admin Access)
 · Show Count and Total amounts of claimed deals on user profile 
 · Upload user Photo and Save it on Database
+
+
+
+
+#
+poetry add django 
+poetry add restframewrk
+poetry add django-phonenumber-field
+poetry add phonenumbers
