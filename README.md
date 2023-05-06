@@ -16,7 +16,20 @@ records at a time)
 
 
 #
-poetry add django 
-poetry add restframewrk
-poetry add django-phonenumber-field
-poetry add phonenumbers
+poetry add 
+
+
+Django==4.2.1
+django-datetime-utc==1.0.4
+django-filter==23.2
+django-phonenumber-field==7.1.0
+djangorestframework==3.14.0
+importlib-metadata==6.6.0
+Markdown==3.4.3
+phonenumbers==8.13.11
+Pillow==9.5.0
+python-dateutil==2.8.2
+pytz==2023.3
+six==1.16.0
+sqlparse==0.4.4
+zipp==3.15.0
