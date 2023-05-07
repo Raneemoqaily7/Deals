@@ -41,7 +41,12 @@ INSTALLED_APPS = [
     'deal',
     'rest_framework',
     'datetimeutc',
+    'rest_framework.authtoken',
 ]
+
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,6 +75,8 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTH_USER_MODEL="deal.Account"
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
@@ -132,3 +139,14 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+               'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+    'rest_framework.permissions.IsAuthenticated'
+    ]
+    }
+
+

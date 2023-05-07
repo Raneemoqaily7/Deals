@@ -4,25 +4,56 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.decorators import api_view, parser_classes
+from rest_framework.decorators import api_view, parser_classes,permission_classes 
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.parsers import MultiPartParser ,FormParser
 
-from deal.models import User_Profile ,Deal
-from deal.api.serializers import UserSerializer ,DealSerializer ,ImageSerializer 
+from deal.models import Deal,Account
+from deal.api.serializers import DealSerializer ,ImageSerializer ,ProfileSerializer,Registerationerializer
+
+from rest_framework.authtoken.models import Token
+
 
 # Create your views here.
+
+#registeration view 
+@api_view(["POST"])
+def registeration_view (request):
+    if request.method =="POST":
+        serializer = Registerationerializer(data =request.data)
+        data={}
+        if serializer.is_valid():
+            account = serializer.save()
+            data["response"] = "successfully registerd"
+            data["email"] = account.email
+            data["username"] = account.username
+            token =Token.objects.get(user=account).key
+            data["token"] =token
+        else :
+            data=serializer.errors
+        return Response (data)
+
+
+
+
+
+
+
+
+
+
 
 @api_view (['GET','POST'])
 
 def user_list_view (request):
     if request.method == 'GET':
-        user = User_Profile.objects.all()
-        serializer = UserSerializer(user ,many=True)
+        user = Account.objects.all()
+        serializer = ProfileSerializer(user ,many=True)
         
         return Response (serializer.data)
     
     elif request.method == 'POST':
-        serializer =UserSerializer(data= request.data)
+        serializer =ProfileSerializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
 
@@ -31,17 +62,30 @@ def user_list_view (request):
     
 
 
-
-@api_view (["GET","POST"])
-
-def deal_list_view (request):
-
-    if request.method =="GET":
-
+#get deal list
+@api_view(['GET'])
+def get_deal_list(request):
+    try:
         deal = Deal.objects.all()
-        serializer = DealSerializer(deal , many=True)
+    except Deal.DoesNotExist:
+        return Response(status =status.HTTP_404_NOT_FOUND)
+    if request.method =="GET":
+        serializer = DealSerializer(deal ,many=True)
         return Response(serializer.data)
-    
+
+
+
+
+
+
+
+
+
+## add new deal
+
+@api_view (["POST"])
+
+def add_deal_view(request):
 
     if request.method == "POST":
         serializer = DealSerializer(data =request.data)
@@ -53,29 +97,74 @@ def deal_list_view (request):
 
 
 
+
+
+@api_view(['GET'])
+def active_deal_list(request):
+    queryset = Deal.objects.filter(status=Deal.Active)
+    serializer = DealSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
+
 @api_view (["PATCH"])
 def update_user_status(request,id):
     try :
-     user =User_Profile.objects.get(id=id)
+     user =Account.objects.get(id=id)
 
-    except User_Profile.DoesNotExist:
+    except Account.DoesNotExist:
         return Response(status =status.HTTP_404_NOT_FOUND)
     
     if request.method == "PATCH":
-        serializer=UserSerializer(user , request.data , partial= True )
+        serializer=ProfileSerializer(user , request.data , partial= True )
         data= {}
         if serializer.is_valid():
             serializer.save()
-            data["success"]="status updated successfully"
+            data["success"]="User status updated successfully"
             return Response(data= data)
         
         return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
 
 
 
-@api_view (["DELETE"])
 
-#id__in filter to filter the users you want to delete and then call the delete()
+
+
+
+
+@api_view (["PATCH"])
+def update_deal_status(request,id):
+    try :
+        deal =Deal.objects.get(id=id)
+    except Deal.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method =="PATCH":
+        serializer = DealSerializer(deal ,request.data,partial=True)
+        data ={}
+        if serializer.is_valid():
+            serializer.save()
+            data["success"]="Deal status updated successfully"
+            return Response(data =data)
+        
+        return Response(serializer.errors , status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+@api_view (["DELETE"])
+@permission_classes([IsAdminUser])
+
+#id__in filter to filter the users you want to delete and then call the delete() in req.bdy {'users_id': [1,2,3]}
 
 
 def delete_user (request):
@@ -83,14 +172,14 @@ def delete_user (request):
     try:
         users_id = request.data.get('users_id', [])
 
-    except User_Profile.DoesNotExist :
+    except Account.DoesNotExist :
         return Response (status =status.HTTP_404_NOT_FOUND)
     data ={}
     if not users_id :
         return Response({'error': 'user id is  required'}, 
                         status=status.HTTP_400_BAD_REQUEST)
     
-    users = User_Profile.objects.filter(id__in=users_id)
+    users = Account.objects.filter(id__in=users_id)
     users.delete()
     data["success"]="delete successful"
     return Response(data=data, status=status.HTTP_204_NO_CONTENT)
@@ -119,3 +208,26 @@ def upload_image(request,format =None):
         else :
 
           return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# @api_view(['GET', 'PUT'])
+# def profile_api_view(request):
+#     try:
+#         profile = request.user.profile
+#     except User_Profile.DoesNotExist:
+#         return Response(status=404)
+
+#     if request.method == 'GET':
+#         serializer = ProfileSerializer(profile)
+#         return Response(serializer.data)
+#     elif request.method == 'PUT':
+#         serializer = ProfileSerializer(profile, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=400)
+
+
+
+#Authentication =>Header -->Authorization -->Token "token"
