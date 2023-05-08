@@ -3,13 +3,23 @@ from rest_framework import serializers
 from deal.models import  Deal,Account
 
 
+
+class DealSerializer(serializers.ModelSerializer):
+    class Meta :
+        model =Deal
+        fields = ["id","name","Description","status","amount","currency" ,"DateTime_UTC","Server_DateTime"]
+
+
+
+
+
+
+
 class ProfileSerializer (serializers.ModelSerializer):
     class Meta :
         model = Account
-        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image"]
-
-
-
+        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal"]
+        depth = 1
 
 
 
@@ -52,12 +62,6 @@ class Registerationerializer (serializers.ModelSerializer):
 
 
 
-
-
-class DealSerializer(serializers.ModelSerializer):
-    class Meta :
-        model =Deal
-        fields = ["id","name","Description","status","amount","currency" ,"DateTime_UTC","Server_DateTime"]
 
 
 

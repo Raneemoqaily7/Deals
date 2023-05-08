@@ -22,7 +22,7 @@ def get_upload_path (instance,filename):
 
 
 class Deal (models.Model):
-
+    
     Active = "Active"
     In_Active="In_Active"
     Deleted = "Deleted"
@@ -52,6 +52,9 @@ class Deal (models.Model):
     def __str__(self):
         return self.name
     
+
+
+
 
 class AccountManager (BaseUserManager):
     def create_user(self ,email,username,password):
@@ -106,7 +109,6 @@ class Account (AbstractBaseUser):
     DateTime_UTC= DateTimeUTCField(auto_now_add=True,null=True)
     date_joined = models.DateTimeField(verbose_name="data_joined" ,auto_now_add=True)
     Update_DateTime_UTC = DateTimeUTCField(auto_now=True)
-    # last_login = DateTimeUTCField(verbose_name='Last Login',blank =True ,null=True)
     status = models.CharField(max_length=15 , choices=USER_STATUS_CHOICES ,default= Active)
     phone = PhoneNumberField(verbose_name='phone no.',unique=True,blank=True ,null=True )
     gender= models.CharField(max_length=6,choices=[('MALE','Male'),('FEMALE','Female')],blank=True,null=True)
@@ -117,6 +119,7 @@ class Account (AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
+    claimed_deal =models.ManyToManyField(Deal)
 
 
     USERNAME_FIELD ="username"
@@ -136,13 +139,24 @@ class Account (AbstractBaseUser):
 
 
 
+# class ClaimedDeal(models.Model):
+    
+    
+
+
+
+
+
+
 
 @receiver(post_save , sender =settings.AUTH_USER_MODEL)
+
 def create_token (created ,sender , instance   ,**kwargs):
     if created:
         Token.objects.create(user =instance)
 
     
+
 
 
 

@@ -36,6 +36,18 @@ def registeration_view (request):
 
 
 
+@api_view (['GET'])
+
+def user_deatail_view (request ,id):
+    if request.method == 'GET':
+        try:
+
+          user = Account.objects.get(id=id)
+        except Account.DoesNotExist:
+            return Response (status =status.HTTP_404_NOT_FOUND )
+        serializer = ProfileSerializer(user )
+        
+        return Response (serializer.data)
 
 
 
@@ -52,7 +64,12 @@ def user_list_view (request):
         
         return Response (serializer.data)
     
-    elif request.method == 'POST':
+
+#add user wiith claimed deal
+@api_view (['POST'])
+
+def add_user (request):  
+    if request.method == 'POST':
         serializer =ProfileSerializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
@@ -60,6 +77,17 @@ def user_list_view (request):
             return Response (serializer.data , status=status.HTTP_201_CREATED)
         return Response (serializer.errors , status=status.HTTP_400_BAD_REQUEST)
     
+
+
+# api_view(["POST"])
+# def add_deal (request):
+#     if request.method =="POST":
+#         serializer = ProfileSerializer(data =request.data)
+#         if serializer.is_valid ():
+#             serializer.save()
+#             return Response (serializer.data)
+
+
 
 
 #get deal list
@@ -162,6 +190,7 @@ def update_deal_status(request,id):
 
 
 @api_view (["DELETE"])
+
 @permission_classes([IsAdminUser])
 
 #id__in filter to filter the users you want to delete and then call the delete() in req.bdy {'users_id': [1,2,3]}
@@ -208,6 +237,16 @@ def upload_image(request,format =None):
         else :
 
           return Response(serializer.errors , status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+@api_view(["GET"])
+def get_claimed_deal (request):
+    user =request.user
+
+
+
 
 
 
