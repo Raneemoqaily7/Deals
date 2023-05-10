@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import AbstractBaseUser,BaseUserManager
 from datetimeutc.fields import DateTimeUTCField
+from django.utils import timezone
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth import get_user_model
@@ -11,12 +12,18 @@ from django.conf import settings
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
 import os
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
 
 def get_upload_path (instance,filename):
     return os.path.join('images','users',str(instance.pk),filename)
+
+class DateTimeUTCField(models.DateTimeField):
+    def pre_save(self, model_instance, add):
+        return timezone.now()
+
 
 
 
@@ -85,9 +92,6 @@ class AccountManager (BaseUserManager):
 
 
 
-
-
-
 class Account (AbstractBaseUser):
     Active = "Active"
     In_Active="In_Active"
@@ -100,7 +104,11 @@ class Account (AbstractBaseUser):
         (Deleted ,"Deleted"),
         (Expired ,"Expired")
     ]
+    phone_regex = RegexValidator(
+        regex=r'^\+962\d{8}$'
 
+
+    )
 
     id = models.AutoField(primary_key=True)
     email = models.EmailField(verbose_name="email",max_length=60, unique=True)
@@ -110,7 +118,7 @@ class Account (AbstractBaseUser):
     date_joined = models.DateTimeField(verbose_name="data_joined" ,auto_now_add=True)
     Update_DateTime_UTC = DateTimeUTCField(auto_now=True)
     status = models.CharField(max_length=15 , choices=USER_STATUS_CHOICES ,default= Active)
-    phone = PhoneNumberField(verbose_name='phone no.',unique=True,blank=True ,null=True )
+    phone = models.CharField(validators=[phone_regex],max_length=15,verbose_name='phone no.',unique=True,blank=True ,null=True )
     gender= models.CharField(max_length=6,choices=[('MALE','Male'),('FEMALE','Female')],blank=True,null=True)
     Date_Of_Birth = models.DateField(blank=True ,null=True ,max_length=8) 
     user_image =models.ImageField(blank=True ,null=True ,upload_to=get_upload_path )
@@ -119,7 +127,7 @@ class Account (AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
-    claimed_deal =models.ManyToManyField(Deal)
+    claimed_deal =models.ManyToManyField(Deal ,blank=True,null=True)
 
 
     USERNAME_FIELD ="username"

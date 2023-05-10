@@ -27,6 +27,17 @@ argon2 = ["argon2-cffi (>=19.1.0)"]
 bcrypt = ["bcrypt"]
 
 [[package]]
+name = "django-cors-headers"
+version = "3.14.0"
+description = "django-cors-headers is a Django application for handling the server headers required for Cross-Origin Resource Sharing (CORS)."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+Django = ">=3.2"
+
+[[package]]
 name = "django-datetime-utc"
 version = "1.0.4"
 description = "Django UTC datetime field - timestamp without time zone"
@@ -189,7 +200,7 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "8f85c3d418f95803560d7c394fe98ae1bf32e7c4eb6148f7073dd4f6a5f8e6e0"
+content-hash = "89bf5e72b4af68aa472852ef5e79cb86318d7784d122c8fa7b7651924e0db918"
 
 [metadata.files]
 asgiref = [
@@ -199,6 +210,10 @@ asgiref = [
 django = [
     {file = "Django-4.2.1-py3-none-any.whl", hash = "sha256:066b6debb5ac335458d2a713ed995570536c8b59a580005acb0732378d5eb1ee"},
     {file = "Django-4.2.1.tar.gz", hash = "sha256:7efa6b1f781a6119a10ac94b4794ded90db8accbe7802281cd26f8664ffed59c"},
+]
+django-cors-headers = [
+    {file = "django_cors_headers-3.14.0-py3-none-any.whl", hash = "sha256:684180013cc7277bdd8702b80a3c5a4b3fcae4abb2bf134dceb9f5dfe300228e"},
+    {file = "django_cors_headers-3.14.0.tar.gz", hash = "sha256:5fbd58a6fb4119d975754b2bc090f35ec160a8373f276612c675b00e8a138739"},
 ]
 django-datetime-utc = [
     {file = "django-datetime-utc-1.0.4.tar.gz", hash = "sha256:d0b394df93ca252fda9bf2b177fc31b5f2a4d3df993716917a1ccf6cd9588d8d"},

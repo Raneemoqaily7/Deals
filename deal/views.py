@@ -69,6 +69,7 @@ def user_list_view (request):
 @api_view (['POST'])
 
 def add_user (request):  
+    print (request.data ,"rrrrrrrrrrrrrrrrrrr")
     if request.method == 'POST':
         serializer =ProfileSerializer(data= request.data)
         if serializer.is_valid():
@@ -191,15 +192,16 @@ def update_deal_status(request,id):
 
 @api_view (["DELETE"])
 
-@permission_classes([IsAdminUser])
+# @permission_classes([IsAdminUser])
 
 #id__in filter to filter the users you want to delete and then call the delete() in req.bdy {'users_id': [1,2,3]}
 
 
 def delete_user (request):
-   
+    print(request.data ,"rrrrrrrrrrrrrrrrrr")
     try:
         users_id = request.data.get('users_id', [])
+        print(users_id ,"usersssssssss id")
 
     except Account.DoesNotExist :
         return Response (status =status.HTTP_404_NOT_FOUND)
