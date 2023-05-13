@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 
 
 from rest_framework.decorators import api_view
@@ -38,7 +39,20 @@ def registeration_view (request):
 
 @api_view (['GET'])
 
-def user_deatail_view (request ,id):
+def user_deatail_view (request ,username):
+    if request.method == 'GET':
+        try:
+
+          user = Account.objects.get(username=username)
+        except Account.DoesNotExist:
+            return Response (status =status.HTTP_404_NOT_FOUND )
+        serializer = ProfileSerializer(user )
+        
+        return Response (serializer.data)
+
+@api_view (['GET'])
+
+def user_detail_view_by_id (request ,id):
     if request.method == 'GET':
         try:
 
@@ -48,8 +62,6 @@ def user_deatail_view (request ,id):
         serializer = ProfileSerializer(user )
         
         return Response (serializer.data)
-
-
 
 
 
@@ -146,6 +158,7 @@ def active_deal_list(request):
 
 @api_view (["PATCH"])
 def update_user_status(request,id):
+    print (request.data , "Request")
     try :
      user =Account.objects.get(id=id)
 
@@ -182,7 +195,7 @@ def update_deal_status(request,id):
         if serializer.is_valid():
             serializer.save()
             data["success"]="Deal status updated successfully"
-            return Response(data =data)
+            return Response (serializer.data ,status=status.HTTP_200_OK)
         
         return Response(serializer.errors , status.HTTP_400_BAD_REQUEST)
 
@@ -227,9 +240,14 @@ def delete_user (request):
     
 @api_view (["POST"])
 @parser_classes([MultiPartParser ,FormParser])
-def upload_image(request,format =None):
+def upload_image(request,id,format =None):
+    print(request,"Req")
+    print(id,"id")
+    user =Account.objects.get(id=id)
+    print(user,"user")
+
     if request.method == "POST":
-        user =request.user
+       
         serializer=ImageSerializer(instance =user ,data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -243,32 +261,25 @@ def upload_image(request,format =None):
 
 
 
-@api_view(["GET"])
-def get_claimed_deal (request):
-    user =request.user
 
 
 
+@api_view(["PATCH"])
+def user_deals(request, username):
+    try:
+        user = Account.objects.get(username=username)
+        deals = request.data.get("claimed_deal", [])
+        deal_names = [deal["name"] for deal in deals]
+        new_deals = Deal.objects.filter(name__in=deal_names)
+        user.claimed_deal.add(*new_deals)  
 
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            data = {"success": "User Deals updated successfully"}
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Account.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-# @api_view(['GET', 'PUT'])
-# def profile_api_view(request):
-#     try:
-#         profile = request.user.profile
-#     except User_Profile.DoesNotExist:
-#         return Response(status=404)
-
-#     if request.method == 'GET':
-#         serializer = ProfileSerializer(profile)
-#         return Response(serializer.data)
-#     elif request.method == 'PUT':
-#         serializer = ProfileSerializer(profile, data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=400)
-
-
-
-#Authentication =>Header -->Authorization -->Token "token"

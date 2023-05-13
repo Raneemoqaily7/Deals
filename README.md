@@ -34,3 +34,4 @@ pytz==2023.3
 six==1.16.0
 sqlparse==0.4.4
 zipp==3.15.0
+PostgreSQL { pip install psycopg2}

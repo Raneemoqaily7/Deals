@@ -13,9 +13,10 @@ urlpatterns = [
     #get user list
     path('user_list/', views.user_list_view),
 
-    #get claimed deals  and search by user id 
+    #get claimed deals  and search by username
 
-    path('user_list/<int:id>', views.user_deatail_view),
+    path('user_list/<str:username>', views.user_deatail_view),
+    path('user_list_id/<int:id>', views.user_detail_view_by_id),
 
    
 
@@ -46,10 +47,12 @@ urlpatterns = [
     path('delete_user/', views.delete_user),
 
 
-    path('upload_image/', views.upload_image),
+    path('upload_image/<int:id>', views.upload_image),
 
+    path('update_deals/<str:username>', views.user_deals),
     #get Active Deal List
     path('active-deals/', views.active_deal_list),
+    
    
     
     

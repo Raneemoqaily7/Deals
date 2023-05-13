@@ -18,7 +18,8 @@ from django.core.validators import RegexValidator
 
 
 def get_upload_path (instance,filename):
-    return os.path.join('images','users',str(instance.pk),filename)
+    # return os.path.join('images','users',str(instance.pk),filename)
+    return "posts/{filename}".format(filename=filename)
 
 class DateTimeUTCField(models.DateTimeField):
     def pre_save(self, model_instance, add):

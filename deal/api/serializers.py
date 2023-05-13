@@ -7,7 +7,7 @@ from deal.models import  Deal,Account
 class DealSerializer(serializers.ModelSerializer):
     class Meta :
         model =Deal
-        fields = ["id","name","Description","status","amount","currency" ,"DateTime_UTC","Server_DateTime"]
+        fields = ["id","name","Description","status","amount","currency" ,"DateTime_UTC","Server_DateTime","Update_DateTime_UTC"]
 
 
 
@@ -18,8 +18,13 @@ class DealSerializer(serializers.ModelSerializer):
 class ProfileSerializer (serializers.ModelSerializer):
     class Meta :
         model = Account
-        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal"]
+        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal","is_admin"]
         depth = 1
+
+    # def update(self,instance,validated_data):
+    #     instance.user_image=validated_data.get('user_image',instance.user_image)
+    #     instance.save()
+    #     return inst
 
 
 
