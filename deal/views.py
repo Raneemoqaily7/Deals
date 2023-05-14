@@ -27,7 +27,11 @@ def registeration_view (request):
             account = serializer.save()
             data["response"] = "successfully registerd"
             data["email"] = account.email
-            data["username"] = account.username
+            data["phone"] = account.phone
+            data["status"] = account.status
+            data["gender"] = account.gender
+            data["Date_Of_Birth"] = account.Date_Of_Birth
+            data["status"] = account.status
             token =Token.objects.get(user=account).key
             data["token"] =token
         else :
@@ -85,6 +89,7 @@ def add_user (request):
     if request.method == 'POST':
         serializer =ProfileSerializer(data= request.data)
         if serializer.is_valid():
+            
             serializer.save()
 
             return Response (serializer.data , status=status.HTTP_201_CREATED)

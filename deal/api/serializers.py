@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
 
 from deal.models import  Deal,Account
 
@@ -18,7 +19,7 @@ class DealSerializer(serializers.ModelSerializer):
 class ProfileSerializer (serializers.ModelSerializer):
     class Meta :
         model = Account
-        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal","is_admin"]
+        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal","is_admin","last_login","Update_DateTime_UTC","date_joined"]
         depth = 1
 
     # def update(self,instance,validated_data):
@@ -27,36 +28,67 @@ class ProfileSerializer (serializers.ModelSerializer):
     #     return inst
 
 
-
+ 
 
 class Registerationerializer (serializers.ModelSerializer):
-    
-    password2=serializers.CharField(style={'input_type': 'password'},write_only=True)
+    password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
 
-    class Meta :
-        model =Account
-        fields = ["email" ,"username" ,"password","password2"]
+    class Meta:
+        model = Account
+        fields = ["email", "username", "password", "password2","phone","user_image","status","gender","Date_Of_Birth"]
         extra_kwargs = {
-
             'password': {'write_only': True}
         }
 
     def save(self):
-        account =Account(
-            email =self.validated_data["email"],
-            
-            username =self.validated_data["username"],
-        )        
+      
+        email = self.validated_data["email"]
+        username = self.validated_data["username"]
         password = self.validated_data["password"]
-        password2=self.validated_data["password2"]
+        password2 = self.validated_data["password2"]
+        phone = self.validated_data["phone"]
+        gender=self.validated_data["gender"]
+        status=self.validated_data["status"]
+        Date_Of_Birth=self.validated_data["Date_Of_Birth"]
+        user_image=self.validated_data["user_image"]
+        
 
-        if password2 !=password:
+
+        if password2 != password:
             raise serializers.ValidationError({'password': 'Passwords must match'})
-        
-        
-        account.set_password(password)
+
+        account = Account(email=email,user_image=user_image, username=username, password=make_password(password),Date_Of_Birth=Date_Of_Birth,phone =phone,gender=gender,status=status)
         account.save()
         return account
+
+# class Registerationerializer (serializers.ModelSerializer):
+    
+#     password2=serializers.CharField(style={'input_type': 'password'},write_only=True)
+
+#     class Meta :
+#         model =Account
+#         fields = ["email" ,"username" ,"password","password2"]
+#         extra_kwargs = {
+
+#             'password': {'write_only': True}
+#         }
+
+#     def save(self):
+#         account =Account(
+#             email =self.validated_data["email"],
+            
+#             username =self.validated_data["username"],
+#         )        
+#         password = self.validated_data["password"]
+#         password2=self.validated_data["password2"]
+
+#         if password2 !=password:
+#             raise serializers.ValidationError({'password': 'Passwords must match'})
+        
+        
+#         account.set_password(password)
+#         account.save()
+#         return account
 
 
 

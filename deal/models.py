@@ -112,6 +112,7 @@ class Account (AbstractBaseUser):
     )
 
     id = models.AutoField(primary_key=True)
+    
     email = models.EmailField(verbose_name="email",max_length=60, unique=True)
     username =models.CharField(max_length=30 ,unique=True)
     Server_DateTime = models.DateTimeField(auto_now_add=True,blank=True ,null=True )
