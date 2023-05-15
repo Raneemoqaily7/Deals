@@ -19,7 +19,7 @@ class DealSerializer(serializers.ModelSerializer):
 class ProfileSerializer (serializers.ModelSerializer):
     class Meta :
         model = Account
-        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal","is_admin","last_login","Update_DateTime_UTC","date_joined"]
+        fields=["id" ,"username" ,"status","email","phone","gender","Date_Of_Birth" ,"user_image","claimed_deal","is_admin","Server_DateTime","date_joined","Update_DateTime_UTC","last_login"]
         depth = 1
 
     # def update(self,instance,validated_data):

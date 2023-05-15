@@ -20,6 +20,8 @@ from rest_framework.authtoken.models import Token
 #registeration view 
 @api_view(["POST"])
 def registeration_view (request):
+    print (request.data ,"rrrrrrrrrrrrrrrrrrr")
+
     if request.method =="POST":
         serializer = Registerationerializer(data =request.data)
         data={}
@@ -29,11 +31,13 @@ def registeration_view (request):
             data["email"] = account.email
             data["phone"] = account.phone
             data["status"] = account.status
+            data["user_image"] = account.user_image
             data["gender"] = account.gender
             data["Date_Of_Birth"] = account.Date_Of_Birth
-            data["status"] = account.status
+            data["username"] = account.username
             token =Token.objects.get(user=account).key
             data["token"] =token
+            account = serializer.save()
         else :
             data=serializer.errors
         return Response (data)
