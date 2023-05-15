@@ -1,5 +1,5 @@
 # Deals
-Create web pages/views Consuming REST API to process the following features:
+## Next.Js-Django Full-Stack Web App of Deals with the follwoing the following features:
 · Add new user
 · Add new deal
 · Ability to Change User/Deal Status (Active, In Active, Deleted, Expired)
@@ -15,9 +15,14 @@ records at a time)
 
 
 
-#
+
+
+
+## Authentication
 Token Authentication
-poetry add 
+
+## DataBase
+postgres
 
 
 Django==4.2.1
